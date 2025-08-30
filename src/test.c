@@ -102,7 +102,11 @@ void test_unload(test_context_t *context) {
     }
 
     if (context->dlhandle) {
+#ifdef _WIN32
         FreeLibrary(context->dlhandle);
+#else
+        dlclose(context->dlhandle);
+#endif
     }
 
     if (context->specific) {

@@ -39,7 +39,7 @@ struct test_context {
 #ifdef _WIN32
     HMODULE dlhandle;
 #else
-    void *dlhandle
+    void *dlhandle;
 #endif
     test_foo_t foo;
     test_tick_t tick;

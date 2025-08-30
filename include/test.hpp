@@ -1,8 +1,7 @@
 #ifndef __TEST_HPP__
 #define __TEST_HPP__
 
-#include "test.h"
-
+#include <test.h>
 #include <iostream>
 
 namespace test {

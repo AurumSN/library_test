@@ -5,7 +5,25 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 
-#include <stdio.h>
+#ifndef TEST_IMPL_A_FILEPATH
+#ifdef _WIN32
+#define TEST_IMPL_A_FILEPATH "./libtest_impl_a.dll"
+#else
+#define TEST_IMPL_A_FILEPATH "./libtest_impl_a.so"
+#endif
+#endif
+
+#ifndef TEST_IMPL_B_FILEPATH
+#ifdef _WIN32
+#define TEST_IMPL_B_FILEPATH "./libtest_impl_b.dll"
+#else
+#define TEST_IMPL_B_FILEPATH "./libtest_impl_b.so"
+#endif
+#endif
+
+#ifndef STRINGIFY
+#define STRINGIFY(X) #X
+#endif
 
 void test_initialize(test_context_t *context) {
     if (!context) {
@@ -39,10 +57,10 @@ void test_load(test_context_t *context, test_version_t new_version) {
 
     switch (new_version) {
         case test_version_VERSION_A:
-            context->dlhandle = dlopen("./libtest_impl_a.so", RTLD_LAZY);
+            context->dlhandle = dlopen(TEST_IMPL_A_FILEPATH, RTLD_LAZY);
             break;
         case test_version_VERSION_B:
-            context->dlhandle = dlopen("./libtest_impl_b.so", RTLD_LAZY);
+            context->dlhandle = dlopen(TEST_IMPL_B_FILEPATH, RTLD_LAZY);
             break;
         default:
             return;
@@ -56,8 +74,8 @@ void test_load(test_context_t *context, test_version_t new_version) {
     context->version = new_version;
     context->specific = NULL;
 
-    context->foo = (test_foo_t)dlsym(context->dlhandle, "test_impl_foo");
-    context->tick = (test_tick_t)dlsym(context->dlhandle, "test_impl_tick");
+    context->foo = (test_foo_t)dlsym(context->dlhandle, STRINGIFY(test_impl_foo));
+    context->tick = (test_tick_t)dlsym(context->dlhandle, STRINGIFY(test_impl_tick));
 }
 
 void test_unload(test_context_t *context) {

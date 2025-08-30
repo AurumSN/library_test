@@ -13,7 +13,7 @@ void test_impl_tick(test_context_t *context) {
 #else
 
 int test_impl_foo(test_context_t *context) {
-    return -(context->shared.tick % 64);
+    return -(int)(context->shared.tick % 64);
 }
 
 void test_impl_tick(test_context_t *context) {

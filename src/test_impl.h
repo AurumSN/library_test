@@ -3,8 +3,24 @@
 
 #include "test.h"
 
-int test_impl_foo(test_context_t *context);
+#ifndef EXPORT
+#ifdef _WIN32
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT
+#endif
+#endif
 
-void test_impl_tick(test_context_t *context);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+EXPORT int test_impl_foo(test_context_t *context);
+
+EXPORT void test_impl_tick(test_context_t *context);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

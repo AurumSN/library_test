@@ -1,6 +1,12 @@
 #ifndef __TEST_H__
 #define __TEST_H__
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -30,7 +36,11 @@ struct test_context {
     } shared;
     void *specific;
 
-    void *dlhandle;
+#ifdef _WIN32
+    HMODULE dlhandle;
+#else
+    void *dlhandle
+#endif
     test_foo_t foo;
     test_tick_t tick;
 };

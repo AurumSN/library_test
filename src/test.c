@@ -3,7 +3,10 @@
 #include "test_impl.h"
 
 #include <stdlib.h>
+
+#ifndef _WIN32
 #include <dlfcn.h>
+#endif
 
 #ifndef TEST_IMPL_A_FILEPATH
 #ifdef _WIN32
@@ -24,6 +27,8 @@
 #ifndef STRINGIFY
 #define STRINGIFY(X) #X
 #endif
+
+#include <stdio.h>
 
 void test_initialize(test_context_t *context) {
     if (!context) {
@@ -57,10 +62,18 @@ void test_load(test_context_t *context, test_version_t new_version) {
 
     switch (new_version) {
         case test_version_VERSION_A:
+#ifdef _WIN32
+            context->dlhandle = LoadLibrary(TEXT(TEST_IMPL_A_FILEPATH));
+#else
             context->dlhandle = dlopen(TEST_IMPL_A_FILEPATH, RTLD_LAZY);
+#endif
             break;
         case test_version_VERSION_B:
+#ifdef _WIN32
+            context->dlhandle = LoadLibrary(TEXT(TEST_IMPL_B_FILEPATH));
+#else
             context->dlhandle = dlopen(TEST_IMPL_B_FILEPATH, RTLD_LAZY);
+#endif
             break;
         default:
             return;
@@ -74,8 +87,13 @@ void test_load(test_context_t *context, test_version_t new_version) {
     context->version = new_version;
     context->specific = NULL;
 
+#ifdef _WIN32
+    context->foo = (test_foo_t)GetProcAddress(context->dlhandle, STRINGIFY(test_impl_foo));
+    context->tick = (test_tick_t)GetProcAddress(context->dlhandle, STRINGIFY(test_impl_tick));
+#else
     context->foo = (test_foo_t)dlsym(context->dlhandle, STRINGIFY(test_impl_foo));
     context->tick = (test_tick_t)dlsym(context->dlhandle, STRINGIFY(test_impl_tick));
+#endif
 }
 
 void test_unload(test_context_t *context) {
@@ -84,7 +102,7 @@ void test_unload(test_context_t *context) {
     }
 
     if (context->dlhandle) {
-        dlclose(context->dlhandle);
+        FreeLibrary(context->dlhandle);
     }
 
     if (context->specific) {

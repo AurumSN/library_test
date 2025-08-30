@@ -9,6 +9,8 @@ The base of the example is written in C with a CPP "shell".
 The build process is as simple as possible with CMake:
 
 ### Unix
+
+* Execute commands:
 ```
 mkdir build
 cd build
@@ -17,14 +19,24 @@ make
 ```
 
 ### Windows
+
+* Execute commands:
 ```
-TODO
+mkdir build
+cd build
+cmake ..
 ```
+
+* Open `build\library_test.sln`
+* Right click `ALL_BUILD` -> build
 
 ## Running
 
 ### Unix
 
-C Test: `./tests_c`
+* Execute commands `./tests_c` or `./tests_cpp`
 
-CPP Test: `./tests_cpp`
+### Windows
+
+* Right click `tests_c` or `tests_cpp` -> Set as Startup Project
+* Run
